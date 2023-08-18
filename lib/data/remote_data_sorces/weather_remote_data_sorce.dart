@@ -4,9 +4,14 @@ class WeatherRemoteDataSource {
   Future<Map<String, dynamic>?> getWeatherData({
     required String city,
   }) async {
-    final response = await Dio().get<Map<String, dynamic>>(
-        'http://api.weatherapi.com/v1/current.json?key=f629b90ffa334c3289455816231808&q=$city&aqi=no');
+    try {
+      final response = await Dio().get<Map<String, dynamic>>(
+          'http://api.weatherapi.com/v1/current.json?key=f629b90ffa334c3289455816231808&q=$city&aqi=no');
 
-    return response.data;
+      return response.data;
+    } on DioError catch (error) {
+      throw Exception(
+          error.response?.data['error']['message'] ?? 'Unknown error');
+    }
   }
 }
